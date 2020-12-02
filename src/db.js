@@ -4,7 +4,6 @@ export default class DB{
 
     constructor(name){
         this.db = new PouchDB(name);
-      
     }
 
     async getAllProjects(){
@@ -24,6 +23,13 @@ export default class DB{
 
         return res;
     }
+
+
+
+    async deleteProject(project) {
+        await this.db.remove(project);
+    }
+
 }
 
 

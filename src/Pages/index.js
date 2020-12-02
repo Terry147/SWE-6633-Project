@@ -10,10 +10,10 @@ export default class IndexPage extends React.Component{
         const projects = Object.values(this.props.projects);
 
         return(
-        <div id ="start">
+        <div>
 
-            <h1 > Projects</h1>
-      
+            <h1> Projects</h1>
+
            { /*<h2>{projects[0]._title}</h2>*/}
 
             <ProjectList allListedProjects = {this.props.projects} />

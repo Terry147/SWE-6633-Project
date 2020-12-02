@@ -1,10 +1,18 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 
 
 export default class ShowProjectPage extends React.Component{
 
 
+   
+    componentWillMount() {
+        if (!this.props.project) {
+            this.props.history.replace(`/`);
+            return;
+        }
+    }
 
     render()
     {
@@ -13,7 +21,7 @@ export default class ShowProjectPage extends React.Component{
         //This is set different from the ones that catch the whole array
         const{project} = this.props;
 
-        if(!project){
+        if (!project) {
             return null;
         }
 
@@ -22,6 +30,7 @@ export default class ShowProjectPage extends React.Component{
             //this prints out the project information.
             //The information is pulled from the var above
             <div>
+                <form onSubmit={this.handleSave}>
                 <h1>{project.title}</h1>
                 <div>Owner: {project.owner}</div>
                 <div>Team: {project.team}</div>
@@ -31,10 +40,18 @@ export default class ShowProjectPage extends React.Component{
                 <div>Functional Requirment: {project.functionalreq}</div>
                 <div>Total Functional Requirment Time(Hrs): {project.totlalfunctionalreqhour}</div>
                 <div>Non Functional Requirment: {project.nonfunctionalreq}</div>
-                <div>Total Non Functional Requirment Time(Hrs): {project.totlalnonfunctionalreqhour}</div>
+                <div>Total Non Functional Requirment Time(Hrs): {project.nonfunctionalreq}</div>
 
+                </form>
             
-            </div>
+                <button className="btn" onClick={ (e) => this.props.onDelete(project._id) }>Delete</button>
+
+                <Link to ="/">Back</Link>
+                {/* <button> Edit </button> */}
+                </div>
+                
+                
+           
 
             
 
@@ -48,4 +65,3 @@ const product = data.products.find(x => Number(x._id) === Number(props.match.par
 
 
  */
-

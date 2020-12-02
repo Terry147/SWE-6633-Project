@@ -17,9 +17,37 @@ class App extends Component {
       db: new DB("Project DB"),
         //An array of projects
         projectsArray:{
-         
- 
-        }
+          //First object in the Array, 
+/*           1:{
+            _id:1,
+            title: "Example Project",
+            owner: "Peter Adeojo",
+            team:  "Steve , Terry",
+            description:"Example Project Description",
+            risk: "Current Risk Associated with the projet",
+            riskStatus: "How are the risk going"
+          },
+          2:{
+            _id:2,
+            title: "Example Project 2",
+            owner: "Naruto Uzamaki",
+            team:  "Sasuke, Sakura",
+            description:"Project for the Hidden Leaf",
+            risk: "Current Risk Associated with the projet",
+            riskStatus: "How are the risk going"
+          },
+          3:{
+            _id:3,
+            title: "Example Project 3",
+            owner: "Monkey D. Luffy",
+            team:  "Zoro, Sanji",
+            description:"Project to find One Piece",
+            risk: "Current Risk Associated with the projet",
+            riskStatus: "How are the risk going"
+          }
+ */
+        },
+        loading:true
 
     }
 
@@ -28,7 +56,8 @@ class App extends Component {
       const projectsArray = await this.state.db.getAllProjects();
 
       this.setState({
-        projectsArray
+        projectsArray,
+        loading: false
       });
     }
 
@@ -46,20 +75,36 @@ class App extends Component {
           ...projectsArray,
           [id]: project
         }
-
       });
 
       return id;
 
     }
 
-    render()
-    {
+    async handleDelete(id) {
+      let { projectsArray } = this.state;
+      let project = projectsArray[id];
+  
+      if (projectsArray[id] && window.confirm("Are you sure you want to delete this note?")) {
+        await this.state.db.deleteProject(project);
+  
+        delete projectsArray[id];
+  
+        this.setState({ projectsArray });
+      }
+    }
+
+    renderContent(){
+
+      if(this.state.loading)
+      {
+        return <h2>Loading.....</h2>
+      }
       return(
-      <BrowserRouter>
-        <div className = "App">
-        <Navbar />
-        {/* This passes the variable projects containing the the array to the index
+
+        <div className = "app-content">
+
+           {/* This passes the variable projects containing the the array to the index
         page*/}
 
         {/** Route Explanation:
@@ -84,21 +129,39 @@ class App extends Component {
         <Route exact path = "/" component={(props) => <IndexPage {...props} projects ={this.state.projectsArray} /> }  />
 
 
-         {/** For this route we need to pass a single project in order to populate the ShowProjectPage.
-          * 
-          * I do this by setting the paramaters passed to the web page to the project array BUT i use the [] meaning a single value
-          * 
-          * from the array will be choosen. From there I use props.match.params._id. This specfic call wiil match the ID to the project choosen
-          * 
-          * --changed projects to project because only 1 project will be passed. Semantics are important
-          */}
+{/** For this route we need to pass a single project in order to populate the ShowProjectPage.
+ * 
+ * I do this by setting the paramaters passed to the web page to the project array BUT i use the [] meaning a single value
+ * 
+ * from the array will be choosen. From there I use props.match.params._id. This specfic call wiil match the ID to the project choosen
+ * 
+ * --changed projects to project because only 1 project will be passed. Semantics are important
+ */}
 
-        <Route exact path = "/project/:id" component={(props) => <ShowProjectPage {...props} project ={this.state.projectsArray[props.match.params.id]} /> }  />
-      
+{/* <Route exact path = "/project/:id" component={(props) => <ShowProjectPage {...props} project ={this.state.projectsArray[props.match.params.id]} /> }  /> */}
 
-        <Route exact path = "/newproj" component={(props) => <NewProject {...props} onSave={this.handleSave} /> }  />
-  
+
+<Route exact path = "/newproj" component={(props) => <NewProject {...props} onSave={this.handleSave} /> }  />
+
+
+
+<Route exact path= "/project/:id" component={(props) => <ShowProjectPage {...props} project={this.state.projectsArray[props.match.params.id]} onDelete={(id) => this.handleDelete(id) }/> } />
+
+
         </div>
+
+        
+      );
+    }
+
+    render()
+    {
+      return(
+      <BrowserRouter>
+        <div className = "App">
+        <Navbar />
+       {this.renderContent()}
+       </div>
 
        
          
@@ -107,7 +170,22 @@ class App extends Component {
 
     }
 
-  
+  /*   <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div> */
 
 
   
